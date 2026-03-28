@@ -29,6 +29,7 @@ const ProductForm = ({ product, onSave }: ProductFormProps) => {
   const [prix, setPrix] = useState(product?.prix?.toString() || '');
   const [disponible, setDisponible] = useState(product?.disponible ?? true);
   const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   // Images
   const [existingImages, setExistingImages] = useState<ProduitImage[]>([]);
@@ -138,6 +139,16 @@ const ProductForm = ({ product, onSave }: ProductFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(null);
+    
+    if (!nom.trim()) {
+      setFormError("Le nom du produit est requis.");
+      return;
+    }
+    if (!marque.trim()) {
+      setFormError("La marque du produit est requise.");
+      return;
+    }
     
     const uploadedNewImages = newImages.filter((img) => img.url);
     
@@ -156,11 +167,13 @@ const ProductForm = ({ product, onSave }: ProductFormProps) => {
       let produitId: string;
 
       if (product) {
-        await supabase.from('produits').update(produitData).eq('id', product.id);
+        const { error } = await supabase.from('produits').update(produitData).eq('id', product.id);
+        if (error) throw error;
         produitId = product.id;
       } else {
         const { data, error } = await supabase.from('produits').insert(produitData).select('id').single();
-        if (error || !data) throw error;
+        if (error) throw error;
+        if (!data) throw new Error("Aucune donnée retournée (ID manquant)");
         produitId = data.id;
       }
 
@@ -172,7 +185,8 @@ const ProductForm = ({ product, onSave }: ProductFormProps) => {
           image_url: img.url!,
           ordre: startOrdre + i,
         }));
-        await supabase.from('produit_images').insert(imageRows);
+        const { error: imagesError } = await supabase.from('produit_images').insert(imageRows);
+        if (imagesError) throw imagesError;
       }
 
       // Cleanup previews
@@ -180,8 +194,15 @@ const ProductForm = ({ product, onSave }: ProductFormProps) => {
       
       setSaving(false);
       onSave();
-    } catch {
-      toast({ title: 'Erreur', description: 'Impossible de sauvegarder le produit.', variant: 'destructive' });
+    } catch (error: any) {
+      console.error("Erreur complète de sauvegarde Supabase:", error);
+      const errorCode = error?.code || 'NO_CODE';
+      const errorMessage = error?.message || 'Erreur inconnue';
+      const hints = error?.hint ? ` | Indice: ${error.hint}` : '';
+      const detailedMessage = `Code: ${errorCode} | Message: ${errorMessage}${hints}`;
+      
+      setFormError(`Erreur lors de la sauvegarde du produit : ${detailedMessage}`);
+      toast({ title: 'Erreur de sauvegarde', description: detailedMessage, variant: 'destructive' });
       setSaving(false);
     }
   };
@@ -195,6 +216,12 @@ const ProductForm = ({ product, onSave }: ProductFormProps) => {
         <h2 className="text-xl font-bold text-foreground">
           {product ? 'Modifier le produit' : 'Ajouter un produit'}
         </h2>
+
+        {formError && (
+          <div className="p-3 mb-4 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg whitespace-pre-line">
+            {formError}
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-medium text-muted-foreground mb-1">Nom</label>
