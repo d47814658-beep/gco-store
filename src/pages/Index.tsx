@@ -28,11 +28,14 @@ const Index = () => {
   }, []);
 
   const fetchProducts = async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('produits')
       .select('*, produit_images(*)')
-      .eq('disponible', true)
+      .neq('disponible', false)
       .order('created_at', { ascending: false });
+    if (error) {
+      console.error('Erreur lors du chargement des produits:', error);
+    }
     setProducts(data || []);
     setLoading(false);
   };
