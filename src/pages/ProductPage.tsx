@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { supabase, type Produit } from '@/lib/supabase';
 import { formatPrice, getWhatsAppUrl } from '@/lib/whatsapp';
+import { cleanText } from '@/lib/utils';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
@@ -143,8 +144,8 @@ const ProductPage = () => {
 
           {/* Info */}
           <div className="flex flex-col gap-4">
-            <p className="text-xs font-semibold uppercase tracking-widest text-primary">{product.marque}</p>
-            <h1 className="text-2xl font-bold text-foreground leading-tight">{product.nom}</h1>
+            <p className="text-xs font-bold uppercase tracking-widest text-primary">{cleanText(product.marque)}</p>
+            <h1 className="text-2xl font-bold text-foreground leading-tight">{cleanText(product.nom)}</h1>
             {product.categorie && (
               <span className="text-xs bg-secondary text-muted-foreground px-3 py-1 rounded-full w-fit">
                 {product.categorie}

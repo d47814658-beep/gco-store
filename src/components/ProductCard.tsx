@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Monitor } from 'lucide-react';
 import type { Produit } from '@/lib/supabase';
 import { formatPrice, getWhatsAppUrl } from '@/lib/whatsapp';
+import { cleanText } from '@/lib/utils';
 
 interface ProductCardProps {
   product: Produit;
@@ -33,11 +34,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
         )}
       </div>
       <div className="p-3 sm:p-4">
-        <p className="text-[10px] sm:text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          {product.marque}
+        <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          {cleanText(product.marque)}
         </p>
         <h3 className="mt-1 font-bold text-sm sm:text-base text-foreground line-clamp-2 group-hover:text-primary transition-colors leading-tight">
-          {product.nom}
+          {cleanText(product.nom)}
         </h3>
         <p className="mt-2 text-base sm:text-lg font-bold text-primary">
           {formatPrice(product.prix)} FCFA
