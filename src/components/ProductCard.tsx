@@ -1,13 +1,13 @@
+import { Link } from 'react-router-dom';
 import { Monitor } from 'lucide-react';
 import type { Produit } from '@/lib/supabase';
 import { formatPrice, getWhatsAppUrl } from '@/lib/whatsapp';
 
 interface ProductCardProps {
   product: Produit;
-  onClick: () => void;
 }
 
-const ProductCard = ({ product, onClick }: ProductCardProps) => {
+const ProductCard = ({ product }: ProductCardProps) => {
   const mainImage = product.produit_images?.find((img) => img.ordre === 0) || product.produit_images?.[0];
 
   const handleWhatsApp = (e: React.MouseEvent) => {
@@ -16,16 +16,16 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   };
 
   return (
-    <div
-      onClick={onClick}
-      className="group bg-card border border-border rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:border-l-2 hover:border-l-primary"
+    <Link
+      to={`/produit/${product.id}`}
+      className="group bg-card border border-border rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:border-l-2 hover:border-l-primary block"
     >
       <div className="w-full h-[220px] bg-secondary/50 overflow-hidden flex items-center justify-center">
         {mainImage ? (
           <img
             src={mainImage.image_url}
             alt={`${product.nom} ${product.marque} - GCO Store Cotonou Bénin`}
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
           />
         ) : (
@@ -36,18 +36,23 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
         <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {product.marque}
         </p>
-        <h3 className="mt-1 font-bold text-foreground truncate">{product.nom}</h3>
+        <h3 className="mt-1 font-bold text-foreground truncate group-hover:text-primary transition-colors">
+          {product.nom}
+        </h3>
         <p className="mt-2 text-lg font-bold text-primary">
           {formatPrice(product.prix)} FCFA
         </p>
         <button
-          onClick={handleWhatsApp}
+          onClick={(e) => {
+            e.preventDefault(); // prevents navigating to product page
+            handleWhatsApp(e);
+          }}
           className="mt-3 text-sm font-medium text-primary hover:opacity-80 transition-opacity"
         >
           Commander via WhatsApp
         </button>
       </div>
-    </div>
+    </Link>
   );
 };
 

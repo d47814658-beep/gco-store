@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { supabase, type Produit } from '@/lib/supabase';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import CategoryFilter from '@/components/CategoryFilter';
 import SearchBar from '@/components/SearchBar';
 import ProductCard from '@/components/ProductCard';
-import ProductModal from '@/components/ProductModal';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import Footer from '@/components/Footer';
 import { PackageOpen } from 'lucide-react';
-import { useLocalBusinessSchema, useProductSchema, useFAQSchema } from '@/hooks/use-seo';
+import { useLocalBusinessSchema, useFAQSchema, useBreadcrumbSchema } from '@/hooks/use-seo';
+import { formatPrice } from '@/lib/whatsapp';
 
 const Index = () => {
   const [products, setProducts] = useState<Produit[]>([]);
@@ -17,11 +18,10 @@ const Index = () => {
   const [category, setCategory] = useState('Tous');
   const [search, setSearch] = useState('');
   const [showSearch, setShowSearch] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Produit | null>(null);
 
   useLocalBusinessSchema();
   useFAQSchema();
-  useProductSchema(selectedProduct);
+  useBreadcrumbSchema();
 
   useEffect(() => {
     fetchProducts();
@@ -49,8 +49,22 @@ const Index = () => {
     return matchCat && matchSearch;
   });
 
+  const metaTitle = 'GCO Store – Matériel Informatique à Cotonou, Bénin';
+  const metaDescription = 'Achetez PC portables, accessoires et périphériques informatiques à Cotonou. Commande rapide via WhatsApp. GCO Store Bénin.';
+  const metaImage = 'https://gcoclaude.shop/og-banner.png';
+
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>{metaTitle}</title>
+        <meta name="description" content={metaDescription} />
+        <meta property="og:title" content={metaTitle} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:image" content={metaImage} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gcoclaude.shop" />
+        <link rel="canonical" href="https://gcoclaude.shop" />
+      </Helmet>
       <Navbar onSearchToggle={() => setShowSearch(!showSearch)} showSearch={showSearch} />
       <Hero />
 
@@ -83,7 +97,6 @@ const Index = () => {
                 <ProductCard
                   key={product.id}
                   product={product}
-                  onClick={() => setSelectedProduct(product)}
                 />
               ))}
             </div>
@@ -93,10 +106,6 @@ const Index = () => {
 
       <Footer />
       <WhatsAppFloat />
-
-      {selectedProduct && (
-        <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
-      )}
     </div>
   );
 };

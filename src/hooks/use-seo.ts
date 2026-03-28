@@ -218,3 +218,33 @@ export function useProductSchema(product: Produit | null) {
     };
   }, [product]);
 }
+
+// ─── BreadcrumbList Schema ───────────────────────────────────────────────────
+export function useBreadcrumbSchema(items?: { name: string; item: string }[]) {
+  useEffect(() => {
+    const breadcrumbs = items || [{ name: 'Accueil', item: 'https://gcoclaude.shop' }];
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbs.map((b, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: b.name,
+        item: b.item,
+      })),
+    };
+
+    let el = document.getElementById('breadcrumb-schema');
+    if (!el) {
+      el = document.createElement('script');
+      el.id = 'breadcrumb-schema';
+      (el as HTMLScriptElement).type = 'application/ld+json';
+      document.head.appendChild(el);
+    }
+    el.textContent = JSON.stringify(schema);
+
+    return () => {
+      document.getElementById('breadcrumb-schema')?.remove();
+    };
+  }, []);
+}
