@@ -7,14 +7,13 @@ export function useLocalBusinessSchema() {
     const schema = {
       '@context': 'https://schema.org',
       '@type': ['ElectronicsStore', 'LocalBusiness'],
-      '@id': 'https://gcostore.bj/#business',
-      name: 'GCO STORE',
+      '@id': 'https://gcoclaude.shop/#business',
+      name: 'GCO Store',
       alternateName: 'GCO Store Cotonou',
-      description:
-        'Boutique informatique N°1 à Cotonou et Abomey-Calavi, Bénin. PC portables, refroidisseurs, clés USB, périphériques et accessoires pour étudiants UAC et professionnels. Commande via WhatsApp, paiement Mobile Money accepté.',
-      url: 'https://gcostore.bj',
-      logo: 'https://gcostore.bj/favicon.png',
-      image: 'https://gcostore.bj/og-banner.png',
+      description: 'Magasin N°1 au Bénin spécialisé dans la vente d\'ordinateurs, routeurs, caméras, imprimantes et accessoires informatiques.',
+      url: 'https://gcoclaude.shop',
+      logo: 'https://gcoclaude.shop/favicon.png',
+      image: 'https://gcoclaude.shop/og-banner.png',
       telephone: '+22994523671',
       address: {
         '@type': 'PostalAddress',
@@ -159,13 +158,13 @@ export function useProductSchema(product: Produit | null) {
     const schema = {
       '@context': 'https://schema.org',
       '@type': 'Product',
-      '@id': `https://gcostore.bj/#product-${product.id}`,
+      '@id': `https://gcoclaude.shop/#product-${product.id}`,
       name: product.nom,
       brand: { '@type': 'Brand', name: product.marque },
       description:
         product.description ||
         `Achetez ${product.nom} ${product.marque} au meilleur prix chez GCO Store à Cotonou, Bénin. Commande via WhatsApp, livraison Abomey-Calavi.`,
-      image: mainImage?.image_url || 'https://gcostore.bj/og-banner.png',
+      image: mainImage?.image_url || 'https://gcoclaude.shop/og-banner.png',
       category: product.categorie,
       offers: {
         '@type': 'Offer',
@@ -179,9 +178,9 @@ export function useProductSchema(product: Produit | null) {
         seller: {
           '@type': 'Organization',
           name: 'GCO STORE',
-          url: 'https://gcostore.bj',
+          url: 'https://gcoclaude.shop',
         },
-        url: 'https://gcostore.bj',
+        url: 'https://gcoclaude.shop',
         shippingDetails: {
           '@type': 'OfferShippingDetails',
           shippingRate: {

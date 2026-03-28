@@ -15,4 +15,4 @@ Allow: /
 Disallow: /admin
 Disallow: /login
 
-Sitemap: https://gcostore.bj/sitemap.xml
+Sitemap: https://gcoclaude.shop/sitemap.xml
