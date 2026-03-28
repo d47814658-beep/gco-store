@@ -20,19 +20,19 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
       onClick={onClick}
       className="group bg-card border border-border rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:border-l-2 hover:border-l-primary"
     >
-      <div className="aspect-square bg-secondary/50 flex items-center justify-center p-8">
+      <div className="w-full h-[220px] bg-secondary/50 overflow-hidden flex items-center justify-center">
         {mainImage ? (
           <img
             src={mainImage.image_url}
             alt={`${product.nom} ${product.marque} - GCO Store Cotonou Bénin`}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-cover object-center"
             loading="lazy"
           />
         ) : (
           <Monitor className="w-16 h-16 text-muted-foreground/30" />
         )}
       </div>
-      <div className="p-5">
+      <div className="p-4">
         <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {product.marque}
         </p>
