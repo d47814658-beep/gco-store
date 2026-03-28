@@ -20,7 +20,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       to={`/produit/${product.id}`}
       className="group bg-card border border-border rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:border-l-2 hover:border-l-primary block"
     >
-      <div className="w-full h-[220px] bg-secondary/50 overflow-hidden flex items-center justify-center">
+      <div className="w-full h-48 sm:h-[220px] bg-secondary/50 overflow-hidden flex items-center justify-center">
         {mainImage ? (
           <img
             src={mainImage.image_url}
@@ -32,22 +32,22 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <Monitor className="w-16 h-16 text-muted-foreground/30" />
         )}
       </div>
-      <div className="p-4">
-        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+      <div className="p-3 sm:p-4">
+        <p className="text-[10px] sm:text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {product.marque}
         </p>
-        <h3 className="mt-1 font-bold text-foreground truncate group-hover:text-primary transition-colors">
+        <h3 className="mt-1 font-bold text-sm sm:text-base text-foreground line-clamp-2 group-hover:text-primary transition-colors leading-tight">
           {product.nom}
         </h3>
-        <p className="mt-2 text-lg font-bold text-primary">
+        <p className="mt-2 text-base sm:text-lg font-bold text-primary">
           {formatPrice(product.prix)} FCFA
         </p>
         <button
           onClick={(e) => {
-            e.preventDefault(); // prevents navigating to product page
+            e.preventDefault(); 
             handleWhatsApp(e);
           }}
-          className="mt-3 text-sm font-medium text-primary hover:opacity-80 transition-opacity"
+          className="hidden sm:block mt-3 text-sm font-medium text-primary hover:opacity-80 transition-opacity"
         >
           Commander via WhatsApp
         </button>
