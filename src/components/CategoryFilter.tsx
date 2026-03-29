@@ -18,13 +18,13 @@ const CategoryFilter = ({ active, onChange }: CategoryFilterProps) => {
   }, []);
 
   return (
-    <div className="flex flex-wrap gap-2 justify-center">
+    <div className="flex overflow-x-auto gap-3 w-full sm:flex-wrap sm:justify-center pb-2 px-2 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       <button
         onClick={() => onChange('Tous')}
-        className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
+        className={`shrink-0 snap-start px-5 py-2 rounded-full text-sm font-bold transition-all ${
           active === 'Tous'
-            ? 'bg-primary text-primary-foreground'
-            : 'border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30'
+            ? 'bg-primary text-primary-foreground shadow-md'
+            : 'bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground'
         }`}
       >
         Tous
@@ -33,10 +33,10 @@ const CategoryFilter = ({ active, onChange }: CategoryFilterProps) => {
         <button
           key={cat.id}
           onClick={() => onChange(cat.nom)}
-          className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
+          className={`shrink-0 snap-start px-5 py-2 rounded-full text-sm font-bold transition-all ${
             active === cat.nom
-              ? 'bg-primary text-primary-foreground'
-              : 'border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30'
+              ? 'bg-primary text-primary-foreground shadow-md'
+              : 'bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground'
           }`}
         >
           {cat.nom}
