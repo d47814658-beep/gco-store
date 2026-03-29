@@ -81,7 +81,7 @@ const Index = () => {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div key={i} className="bg-secondary/50 rounded-lg aspect-[3/4] animate-pulse" />
               ))}
@@ -92,7 +92,7 @@ const Index = () => {
               <p className="mt-4 text-muted-foreground">Aucun produit trouvé.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
               {filtered.map((product) => (
                 <ProductCard
                   key={product.id}
