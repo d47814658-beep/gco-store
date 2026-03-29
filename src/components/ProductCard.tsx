@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Monitor } from 'lucide-react';
+import { Monitor, ArrowRight } from 'lucide-react';
 import type { Produit } from '@/lib/supabase';
 import { formatPrice, getWhatsAppUrl } from '@/lib/whatsapp';
 import { cleanText } from '@/lib/utils';
@@ -19,39 +19,56 @@ const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <Link
       to={`/produit/${product.id}`}
-      className="group bg-card border border-border rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:border-l-2 hover:border-l-primary block"
+      className="group bg-card border border-border sm:border-transparent sm:hover:border-border sm:hover:shadow-md rounded-xl overflow-hidden cursor-pointer transition-all duration-300 block"
     >
-      <div className="w-full h-48 sm:h-[220px] bg-secondary/50 overflow-hidden flex items-center justify-center">
-        {mainImage ? (
-          <img
-            src={mainImage.image_url}
-            alt={`${product.nom} ${product.marque} - GCO Store Cotonou Bénin`}
-            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-            loading="lazy"
-          />
-        ) : (
-          <Monitor className="w-16 h-16 text-muted-foreground/30" />
-        )}
-      </div>
-      <div className="p-3 sm:p-4">
-        <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          {cleanText(product.marque)}
-        </p>
-        <h3 className="mt-1 font-bold text-sm sm:text-base text-foreground line-clamp-2 group-hover:text-primary transition-colors leading-tight">
-          {cleanText(product.nom)}
-        </h3>
-        <p className="mt-2 text-base sm:text-lg font-bold text-primary">
-          {formatPrice(product.prix)} FCFA
-        </p>
-        <button
-          onClick={(e) => {
-            e.preventDefault(); 
-            handleWhatsApp(e);
-          }}
-          className="hidden sm:block mt-3 text-sm font-medium text-primary hover:opacity-80 transition-opacity"
-        >
-          Commander via WhatsApp
-        </button>
+      <div className="flex flex-row sm:flex-col items-stretch h-full">
+        {/* Container Image (Carré à gauche sur mobile, rectangle en haut sur PC) */}
+        <div className="w-[120px] min-w-[120px] sm:w-full h-[120px] sm:h-[220px] bg-secondary/30 overflow-hidden flex flex-shrink-0 items-center justify-center relative border-r sm:border-r-0 sm:border-b border-border/50">
+          {mainImage ? (
+            <img
+              src={mainImage.image_url}
+              alt={`${product.nom} ${product.marque}`}
+              className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+              loading="lazy"
+            />
+          ) : (
+            <Monitor className="w-8 h-8 sm:w-16 sm:h-16 text-muted-foreground/30" />
+          )}
+        </div>
+
+        {/* Container Infos */}
+        <div className="p-3 sm:p-4 flex flex-col justify-between flex-1">
+          <div>
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">
+              {cleanText(product.marque)}
+            </p>
+            <h3 className="font-bold text-sm sm:text-base text-foreground line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+              {cleanText(product.nom)}
+            </h3>
+          </div>
+          
+          <div className="mt-3 flex items-center justify-between">
+            <p className="text-base sm:text-lg font-black text-primary">
+              {formatPrice(product.prix)} <span className="text-[10px] sm:text-xs font-bold text-primary/80">FCFA</span>
+            </p>
+            
+            {/* Icone simple sur mobile pour indiquer l'action */}
+            <div className="sm:hidden w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors text-primary">
+              <ArrowRight className="w-4 h-4" />
+            </div>
+
+            {/* Bouton solide sur PC */}
+            <button
+              onClick={(e) => {
+                e.preventDefault(); 
+                handleWhatsApp(e);
+              }}
+              className="hidden sm:inline-flex items-center text-xs font-bold bg-primary text-primary-foreground px-4 py-2 rounded-full hover:bg-primary/90 transition-colors shadow-sm"
+            >
+              Commander
+            </button>
+          </div>
+        </div>
       </div>
     </Link>
   );
