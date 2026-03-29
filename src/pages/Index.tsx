@@ -9,6 +9,7 @@ import ProductCard from '@/components/ProductCard';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import Footer from '@/components/Footer';
 import { PackageOpen } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import { useLocalBusinessSchema, useFAQSchema, useBreadcrumbSchema } from '@/hooks/use-seo';
 import { formatPrice } from '@/lib/whatsapp';
 
@@ -16,8 +17,8 @@ const Index = () => {
   const [products, setProducts] = useState<Produit[]>([]);
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState('Tous');
-  const [search, setSearch] = useState('');
-  const [showSearch, setShowSearch] = useState(false);
+  const [searchParams] = useSearchParams();
+  const search = searchParams.get('q') || '';
 
   useLocalBusinessSchema();
   useFAQSchema();
@@ -65,17 +66,11 @@ const Index = () => {
         <meta property="og:url" content="https://gcoclaude.shop" />
         <link rel="canonical" href="https://gcoclaude.shop" />
       </Helmet>
-      <Navbar onSearchToggle={() => setShowSearch(!showSearch)} showSearch={showSearch} />
+      <Navbar />
       <Hero />
 
       <section id="products" className="pb-20 px-6">
         <div className="container mx-auto max-w-6xl">
-          {showSearch && (
-            <div className="mb-8 animate-fade-in">
-              <SearchBar value={search} onChange={setSearch} />
-            </div>
-          )}
-
           <div className="mb-10">
             <CategoryFilter active={category} onChange={setCategory} />
           </div>
