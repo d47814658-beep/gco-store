@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase, type Produit } from '@/lib/supabase';
 import ProductTable from '@/components/admin/ProductTable';
 import ProductForm from '@/components/admin/ProductForm';
 import CategoryManager from '@/components/admin/CategoryManager';
+import PromotionManager from '@/components/admin/PromotionManager';
+import OrderManager from '@/components/admin/OrderManager';
 import logo from '@/assets/logo.png';
-import { Plus, LogOut, Package, Tag } from 'lucide-react';
+import { Plus, LogOut, Package, Tag, ClipboardList, Megaphone } from 'lucide-react';
 
-type Tab = 'produits' | 'categories';
+type Tab = 'produits' | 'categories' | 'promotions' | 'commandes';
 
 const Admin = () => {
   const [products, setProducts] = useState<Produit[]>([]);
@@ -16,6 +18,7 @@ const Admin = () => {
   const [showForm, setShowForm] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>('produits');
+  const [pendingOrderCount, setPendingOrderCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -72,10 +75,14 @@ const Admin = () => {
     fetchProducts();
   };
 
+  const handlePendingCountChange = useCallback((count: number) => {
+    setPendingOrderCount(count);
+  }, []);
+
   if (!authChecked) return null;
 
   const tabClass = (tab: Tab) =>
-    `flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+    `flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors relative ${
       activeTab === tab
         ? 'bg-primary text-primary-foreground'
         : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
@@ -99,7 +106,7 @@ const Admin = () => {
       <main className="container mx-auto px-6 py-8 max-w-6xl">
         {/* Tabs */}
         {!showForm && (
-          <div className="flex items-center gap-2 mb-8">
+          <div className="flex items-center gap-2 mb-8 overflow-x-auto pb-2">
             <button className={tabClass('produits')} onClick={() => setActiveTab('produits')}>
               <Package className="w-4 h-4" />
               Produits
@@ -107,6 +114,19 @@ const Admin = () => {
             <button className={tabClass('categories')} onClick={() => setActiveTab('categories')}>
               <Tag className="w-4 h-4" />
               Catégories
+            </button>
+            <button className={tabClass('promotions')} onClick={() => setActiveTab('promotions')}>
+              <Megaphone className="w-4 h-4" />
+              Promotions
+            </button>
+            <button className={tabClass('commandes')} onClick={() => setActiveTab('commandes')}>
+              <ClipboardList className="w-4 h-4" />
+              Commandes
+              {pendingOrderCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold animate-pulse">
+                  {pendingOrderCount}
+                </span>
+              )}
             </button>
           </div>
         )}
@@ -156,6 +176,14 @@ const Admin = () => {
 
         {/* Catégories tab */}
         {activeTab === 'categories' && <CategoryManager />}
+
+        {/* Promotions tab */}
+        {activeTab === 'promotions' && <PromotionManager />}
+
+        {/* Commandes tab */}
+        {activeTab === 'commandes' && (
+          <OrderManager onPendingCountChange={handlePendingCountChange} />
+        )}
       </main>
     </div>
   );

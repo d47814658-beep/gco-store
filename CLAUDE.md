@@ -62,10 +62,10 @@ Ce skill contient :
 
 1. **Lire avant d'écrire** — Toujours lire le fichier cible avant de le modifier.
 2. **Design system sacré** — Ne jamais hardcoder des couleurs. Utiliser uniquement les classes Tailwind (`bg-primary`, `text-muted-foreground`, etc.).
-3. **Pas de panier** — Ce site n'a pas de système de panier. Toute commande passe par WhatsApp.
+3. **Système de panier** — Le site dispose d'un système de panier. Les commandes peuvent être finalisées via WhatsApp ou avec saisie d'informations client, et apparaissent dans le tableau de bord du vendeur.
 4. **shadcn/ui intouchable** — Ne jamais modifier manuellement les fichiers dans `src/components/ui/`.
 5. **Prix en FCFA** — Toujours formater avec `formatPrice()` de `src/lib/whatsapp.ts`.
-6. **WhatsApp obligatoire** — Tous les CTA produit doivent pointer vers `getWhatsAppUrl()`.
+6. **WhatsApp obligatoire pour la confirmation** — Tous les CTA de confirmation de commande doivent pointer vers `getWhatsAppUrl()` ou permettre la saisie d'informations client.
 7. **Auth admin** — La route `/admin` est protégée par Supabase Auth. Ne pas la rendre accessible publiquement.
 8. **Variables d'env** — Ne jamais afficher ni hardcoder les clés Supabase/Cloudinary.
 

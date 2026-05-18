@@ -30,3 +30,35 @@ export type Produit = {
   created_at: string;
   produit_images?: ProduitImage[];
 };
+
+export type Order = {
+  id: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_address: string;
+  client_email?: string;
+  canal: 'whatsapp' | 'formulaire';
+  total_amount: number;
+  status: string;
+  created_at: string;
+  order_items?: (OrderItem & { produits?: Produit })[];
+};
+
+export type OrderItem = {
+  id: string;
+  order_id: string;
+  product_id: string;
+  quantity: number;
+  unit_price: number;
+  created_at: string;
+  produits?: Produit;
+};
+
+export type Promotion = {
+  id: string;
+  texte: string;
+  actif: boolean;
+  date_debut: string;
+  date_fin: string;
+  created_at: string;
+};

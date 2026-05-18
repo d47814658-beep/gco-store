@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { supabase, type Produit } from '@/lib/supabase';
 import Navbar from '@/components/Navbar';
+import PromoBanner from '@/components/PromoBanner';
 import Hero from '@/components/Hero';
 import CategoryFilter from '@/components/CategoryFilter';
 import SearchBar from '@/components/SearchBar';
@@ -67,6 +68,7 @@ const Index = () => {
         <link rel="canonical" href="https://gcoclaude.shop" />
       </Helmet>
       <Navbar />
+      <PromoBanner />
       <Hero />
 
       <section id="products" className="pb-20 px-6">
@@ -86,14 +88,49 @@ const Index = () => {
               <PackageOpen className="w-12 h-12 mx-auto text-muted-foreground/40" />
               <p className="mt-4 text-muted-foreground">Aucun produit trouvé.</p>
             </div>
-          ) : (
+          ) : category !== 'Tous' ? (
+            /* Single category: flat grid, no section title */
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
               {filtered.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                />
+                <ProductCard key={product.id} product={product} />
               ))}
+            </div>
+          ) : (
+            /* All categories: grouped display */
+            <div className="space-y-14">
+              {Object.entries(
+                filtered.reduce<Record<string, Produit[]>>((groups, product) => {
+                  const cat = product.categorie || 'Autres';
+                  if (!groups[cat]) groups[cat] = [];
+                  groups[cat].push(product);
+                  return groups;
+                }, {})
+              )
+                .sort(([a], [b]) => {
+                  const aIsPC = a.toLowerCase().includes('pc');
+                  const bIsPC = b.toLowerCase().includes('pc');
+                  if (aIsPC && !bIsPC) return -1;
+                  if (!aIsPC && bIsPC) return 1;
+                  return a.localeCompare(b, 'fr');
+                })
+                .map(([catName, catProducts]) => (
+                  <div key={catName}>
+                    <div className="flex items-center gap-4 mb-6">
+                      <h2 className="text-xl font-bold text-foreground whitespace-nowrap">
+                        {catName}
+                      </h2>
+                      <div className="flex-1 h-px bg-border" />
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                        {catProducts.length} produit{catProducts.length > 1 ? 's' : ''}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                      {catProducts.map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                      ))}
+                    </div>
+                  </div>
+                ))}
             </div>
           )}
         </div>

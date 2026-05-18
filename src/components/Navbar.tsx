@@ -1,15 +1,20 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import { Search, X } from 'lucide-react';
+import { Search, X, ShoppingCart } from 'lucide-react';
 import logo from '@/assets/logo.png';
+import { useCart } from '@/lib/cart';
+import { Badge } from '@/components/ui/badge';
+import CartDrawer from '@/components/CartDrawer';
 
 const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
   const inputRef = useRef<HTMLInputElement>(null);
-  
+  const { totalItems } = useCart();
+
   const query = searchParams.get('q') || '';
 
   const handleSearch = (val: string) => {
@@ -33,13 +38,28 @@ const Navbar = () => {
           <img src={logo} alt="GCO Store" className="h-9" />
           <span className="text-xl font-bold tracking-tight text-foreground">STORE</span>
         </Link>
-        <button
-          onClick={() => setShowSearch(!showSearch)}
-          className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-full transition-colors relative"
-          aria-label="Rechercher"
-        >
-          {showSearch ? <X className="w-5 h-5 text-primary" /> : <Search className="w-5 h-5" />}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowSearch(!showSearch)}
+            className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-full transition-colors relative"
+            aria-label="Rechercher"
+          >
+            {showSearch ? <X className="w-5 h-5 text-primary" /> : <Search className="w-5 h-5" />}
+          </button>
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="relative p-2 text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-full transition-colors"
+            aria-label="Panier"
+          >
+            <ShoppingCart className="w-5 h-5" />
+            {/* Badge */}
+            {totalItems > 0 && (
+              <Badge className="absolute -top-1 -right-1">
+                {totalItems}
+              </Badge>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Global Search Bar Dropdown */}
@@ -58,6 +78,8 @@ const Navbar = () => {
           </div>
         </div>
       )}
+      {/* Cart Drawer */}
+      {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} />}
     </nav>
   );
 };

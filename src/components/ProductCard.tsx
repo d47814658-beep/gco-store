@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
-import { Monitor, ArrowRight } from 'lucide-react';
+import { Monitor, ArrowRight, ShoppingCart } from 'lucide-react';
 import type { Produit } from '@/lib/supabase';
 import { formatPrice, getWhatsAppUrl } from '@/lib/whatsapp';
 import { cleanText } from '@/lib/utils';
+import { useCart } from '@/lib/cart';
 
 interface ProductCardProps {
   product: Produit;
@@ -15,11 +16,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
     e.stopPropagation();
     window.open(getWhatsAppUrl(product.nom, product.prix), '_blank');
   };
+  const { addItem } = useCart();
 
   return (
     <Link
       to={`/produit/${product.id}`}
-      className="group bg-card border border-border sm:border-transparent sm:hover:border-border sm:hover:shadow-md rounded-xl overflow-hidden cursor-pointer transition-all duration-300 block"
+      className="group bg-card border border-smart-border sm:border-transparent sm:hover:border-border sm:hover:shadow-md rounded-xl overflow-hidden cursor-pointer transition-all duration-300 block"
     >
       <div className="flex flex-row sm:flex-col items-stretch h-full">
         {/* Container Image (Carré à gauche sur mobile, rectangle en haut sur PC) */}
@@ -46,27 +48,38 @@ const ProductCard = ({ product }: ProductCardProps) => {
               {cleanText(product.nom)}
             </h3>
           </div>
-          
+
           <div className="mt-3 flex items-center justify-between">
             <p className="text-base sm:text-lg font-black text-primary">
               {formatPrice(product.prix)} <span className="text-[10px] sm:text-xs font-bold text-primary/80">FCFA</span>
             </p>
-            
-            {/* Icone simple sur mobile pour indiquer l'action */}
-            <div className="sm:hidden w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors text-primary">
-              <ArrowRight className="w-4 h-4" />
-            </div>
 
-            {/* Bouton solide sur PC */}
-            <button
-              onClick={(e) => {
-                e.preventDefault(); 
-                handleWhatsApp(e);
-              }}
-              className="hidden sm:inline-flex items-center text-xs font-bold bg-primary text-primary-foreground px-4 py-2 rounded-full hover:bg-primary/90 transition-colors shadow-sm"
-            >
-              Commander
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Mobile icon */}
+              <div className="sm:hidden w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors text-primary">
+                <ArrowRight className="w-4 h-4" />
+              </div>
+              {/* Desktop buttons */}
+              <div className="hidden sm:flex sm:flex-col sm:items-stretch gap-2">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleWhatsApp(e);
+                  }}
+                  className="flex items-center justify-center text-xs font-bold bg-primary text-primary-foreground px-3 py-2 rounded-full hover:bg-primary/90 transition-colors shadow-sm"
+                >
+                  Commander
+                </button>
+                <button
+                  onClick={() => {
+                    addItem(product);
+                  }}
+                  className="flex items-center justify-center text-xs font-bold bg-secondary text-primary-foreground px-3 py-2 rounded-full hover:bg-secondary/80 transition-colors"
+                >
+                  <ShoppingCart className="mr-2 h-4 w-4" />Ajouter au panier
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

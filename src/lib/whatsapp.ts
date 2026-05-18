@@ -6,6 +6,10 @@ export function getWhatsAppUrl(nom: string, prix: number): string {
   return `https://wa.me/${PHONE}?text=${encodeURIComponent(text)}`;
 }
 
+export function getWhatsAppUrlWithMessage(message: string): string {
+  return `https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`;
+}
+
 export function getWhatsAppBase(): string {
   return `https://wa.me/${PHONE}`;
 }
