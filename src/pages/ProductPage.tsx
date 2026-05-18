@@ -26,6 +26,23 @@ const ProductPage = () => {
         .single();
       setProduct(data);
       setLoading(false);
+
+      // Meta Pixel Tracking
+      if (data) {
+        const pixelId = import.meta.env.VITE_META_PIXEL_ID;
+        if (pixelId && pixelId !== 'YOUR_PIXEL_ID_HERE') {
+          import('react-facebook-pixel').then((module) => {
+            const ReactPixel = module.default;
+            ReactPixel.track('ViewContent', {
+              content_name: data.nom,
+              content_ids: [data.id],
+              content_type: 'product',
+              value: data.prix,
+              currency: 'XOF',
+            });
+          });
+        }
+      }
     };
     fetchProduct();
   }, [id]);
@@ -163,7 +180,21 @@ const ProductPage = () => {
               {formatPrice(product.prix)} <span className="text-base font-medium">FCFA</span>
             </p>
             <button
-              onClick={() => window.open(getWhatsAppUrl(product.nom, product.prix), '_blank')}
+              onClick={() => {
+                const pixelId = import.meta.env.VITE_META_PIXEL_ID;
+                if (pixelId && pixelId !== 'YOUR_PIXEL_ID_HERE') {
+                  import('react-facebook-pixel').then((module) => {
+                    module.default.track('InitiateCheckout', {
+                      content_name: product.nom,
+                      content_ids: [product.id],
+                      content_type: 'product',
+                      value: product.prix,
+                      currency: 'XOF',
+                    });
+                  });
+                }
+                window.open(getWhatsAppUrl(product.nom, product.prix), '_blank');
+              }}
               className="w-full py-3.5 rounded-xl bg-[#25D366] text-white font-semibold text-sm hover:bg-[#1eb859] transition-colors flex items-center justify-center gap-2 mt-2"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

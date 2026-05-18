@@ -79,6 +79,24 @@ export const CheckoutModal = ({ open, onOpenChange, cartItems, totalPrice }: Che
     return order;
   };
 
+  const trackPurchase = () => {
+    const pixelId = import.meta.env.VITE_META_PIXEL_ID;
+    if (pixelId && pixelId !== 'YOUR_PIXEL_ID_HERE') {
+      import('react-facebook-pixel').then((module) => {
+        const ReactPixel = module.default;
+        ReactPixel.track('Purchase', {
+          value: totalPrice,
+          currency: 'XOF',
+          contents: cartItems.map(item => ({
+            id: item.produit.id,
+            quantity: item.quantity,
+          })),
+          content_type: 'product',
+        });
+      });
+    }
+  };
+
   const handleWhatsAppOrder = async () => {
     setIsSubmitting(true);
     setError(null);
@@ -86,12 +104,14 @@ export const CheckoutModal = ({ open, onOpenChange, cartItems, totalPrice }: Che
       await saveOrder('whatsapp');
       const url = getWhatsAppUrlWithMessage(generateOrderMessage());
       window.open(url, '_blank');
+      trackPurchase();
       clearCart();
       setSuccess(true);
     } catch (err: any) {
       // Still open WhatsApp even if DB save fails
       const url = getWhatsAppUrlWithMessage(generateOrderMessage());
       window.open(url, '_blank');
+      trackPurchase();
       console.error('Failed to save WhatsApp order:', err);
     } finally {
       setIsSubmitting(false);
@@ -108,6 +128,7 @@ export const CheckoutModal = ({ open, onOpenChange, cartItems, totalPrice }: Che
     setSuccess(false);
     try {
       await saveOrder('formulaire');
+      trackPurchase();
       setSuccess(true);
       clearCart();
     } catch (err: any) {

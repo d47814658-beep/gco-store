@@ -49,6 +49,21 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   }, [items]);
 
   const addItem = (produit: Produit) => {
+    // Meta Pixel Tracking
+    const pixelId = import.meta.env.VITE_META_PIXEL_ID;
+    if (pixelId && pixelId !== 'YOUR_PIXEL_ID_HERE') {
+      import('react-facebook-pixel').then((module) => {
+        const ReactPixel = module.default;
+        ReactPixel.track('AddToCart', {
+          content_name: produit.nom,
+          content_ids: [produit.id],
+          content_type: 'product',
+          value: produit.prix,
+          currency: 'XOF',
+        });
+      });
+    }
+
     setItems(prev => {
       const existing = prev.find(item => item.produit.id === produit.id);
       if (existing) {

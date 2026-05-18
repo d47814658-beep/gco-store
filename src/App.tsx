@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import ProductPage from "./pages/ProductPage";
 import NotFound from "./pages/NotFound";
+import MetaPixelTracking from "./components/MetaPixelTracking";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <MetaPixelTracking />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/produit/:id" element={<ProductPage />} />
